@@ -4,20 +4,17 @@ import tkinter as tk
 from tkinter import simpledialog
 
 
-# Функция для создания виртуальной среды
 def create_virtual_env(project_path):
     venv_path = os.path.join(project_path, "venv")
     subprocess.run(["python", "-m", "venv", venv_path])
     return venv_path
 
 
-# Функция для установки зависимостей
 def install_dependencies(venv_path):
     pip_path = os.path.join(venv_path, "Scripts", "pip")
     subprocess.run([pip_path, "install", "fastapi", "uvicorn", "sqlalchemy", "alembic"])
 
 
-# Функция для создания структуры проекта
 def create_project_structure(project_path, api_name):
     app_dir = os.path.join(project_path, "app")
     os.makedirs(os.path.join(app_dir, "models"), exist_ok=True)
@@ -28,7 +25,6 @@ def create_project_structure(project_path, api_name):
     os.makedirs(os.path.join(project_path, "migrations", "versions"), exist_ok=True)
     os.makedirs(os.path.join(project_path, "tests"), exist_ok=True)
 
-    # Создание файлов проекта
     with open(os.path.join(app_dir, "main.py"), "w") as f:
         f.write(f'''from fastapi import FastAPI
 from app.api.v1 import user
@@ -156,32 +152,25 @@ alembic
         f.write(f"# {api_name}\n\nThis is a FastAPI project.")
 
 
-# Функция для создания проекта
 def create_project():
     root = tk.Tk()
-    root.withdraw()  # Скрыть главное окно Tkinter
+    root.withdraw()  
 
-    # Ввод названия проекта
     project_name = simpledialog.askstring("Input", "Enter the project name:")
     if not project_name:
         return
     project_path = os.path.join(os.getcwd(), project_name)
 
-    # Ввод названия API
     api_name = simpledialog.askstring("Input", "Enter the API name:")
     if not api_name:
         return
 
-    # Создание директории проекта
     os.makedirs(project_path, exist_ok=True)
 
-    # Создание виртуальной среды
     venv_path = create_virtual_env(project_path)
 
-    # Установка зависимостей
     install_dependencies(venv_path)
 
-    # Создание структуры проекта
     create_project_structure(project_path, api_name)
 
     print(f"Project {project_name} created successfully at {project_path}")
